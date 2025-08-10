@@ -35,63 +35,72 @@ Built with **React.js, Node.js, Express, MongoDB, and Socket.IO**, this project 
 ---
 
 ## 📂 Project Structure
-
+***
 whatsapp-web-clone/
 │
-├── client/ # React frontend
-│ ├── src/
-│ ├── public/
-│ └── package.json
+├── client/               # React frontend
+│   ├── src/
+│   ├── public/
+│   └── package.json
 │
-├── server/ # Node.js backend
-│ ├── models/ # Mongoose schemas (User, Message)
-│ ├── routes/ # API routes
-│ ├── sample_payloads/ # Test payloads for MongoDB import
-│ ├── processPayloads.js # Script to process sample payloads
-│ ├── server.js # Main backend entry point
-│ └── package.json
+├── server/               # Node.js backend
+│   ├── models/           # Mongoose schemas (User, Message)
+│   ├── routes/           # API routes
+│   ├── sample_payloads/  # Test payloads for MongoDB import
+│   ├── processPayloads.js
+│   ├── server.js         # Main backend entry point
+│   └── package.json
 │
 └── README.md
 
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the Repository
+###
 
-git clone https://github.com/your-username/whatsapp-web-clone.git
+1️⃣ Clone the Repository
+
+git clone https://github.com/Dhruvlearns/whatsapp-web-clone.git
 cd whatsapp-web-clone
+
 2️⃣ Install Dependencies
 Backend:
 cd server
 npm install
 
+
 Frontend:
 cd ../client
 npm install
+
 3️⃣ Configure Environment Variables
 Create a .env file in the server/ directory:
 
-env
 PORT=5000
 MONGODB_URI=your-mongodb-uri
 CLIENT_URL=http://localhost:3000
 NODE_ENV=development
+
+
+
 4️⃣ Run the Application
 Backend:
 cd server
 npm start
+
 Frontend:
 
 cd ../client
 npm start
+
 📦 Processing Sample Payloads
 To test without an actual WhatsApp API connection, you can import mock payloads:
 
 Place your .json files inside server/sample_payloads/.
 
 Run:
-
 npm run process-payloads
+
 Refresh the frontend — you’ll see the imported messages.
 
 
