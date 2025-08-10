@@ -25,5 +25,10 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^9.33.0",
+    "rimraf": "^6.0.1"
   }
 }

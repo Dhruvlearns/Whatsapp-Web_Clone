@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useCallback
+} from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 
@@ -15,12 +21,15 @@ const chatReducer = (state, action) => {
     case 'SET_SOCKET_CONNECTED':
       return { ...state, socketConnected: action.payload };
 
+    case 'SET_SOCKET':
+      return { ...state, socket: action.payload };
+
     case 'SET_CONVERSATIONS':
       return { ...state, conversations: action.payload };
 
     case 'SET_CURRENT_CHAT':
-      return { 
-        ...state, 
+      return {
+        ...state,
         currentChat: action.payload.user,
         messages: action.payload.messages || []
       };
@@ -29,12 +38,14 @@ const chatReducer = (state, action) => {
       return {
         ...state,
         messages: [...state.messages, action.payload],
-        conversations: state.conversations.map(conv => 
+        conversations: state.conversations.map((conv) =>
           conv.wa_id === action.payload.wa_id
-            ? { 
-                ...conv, 
-                lastMessage: { ...action.payload }, 
-                unreadCount: action.payload.is_from_me ? conv.unreadCount : conv.unreadCount + 1
+            ? {
+                ...conv,
+                lastMessage: { ...action.payload },
+                unreadCount: action.payload.is_from_me
+                  ? conv.unreadCount
+                  : conv.unreadCount + 1
               }
             : conv
         )
@@ -43,7 +54,7 @@ const chatReducer = (state, action) => {
     case 'UPDATE_MESSAGE_STATUS':
       return {
         ...state,
-        messages: state.messages.map(msg =>
+        messages: state.messages.map((msg) =>
           msg.id === action.payload.id
             ? { ...msg, status: action.payload.status }
             : msg
@@ -53,7 +64,7 @@ const chatReducer = (state, action) => {
     case 'MARK_MESSAGES_READ':
       return {
         ...state,
-        conversations: state.conversations.map(conv =>
+        conversations: state.conversations.map((conv) =>
           conv.wa_id === action.payload.wa_id
             ? { ...conv, unreadCount: 0 }
             : conv
@@ -78,13 +89,33 @@ const initialState = {
 export const ChatProvider = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
-  const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
-  const socketUrl = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
+  const serverUrl =
+    process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+  const socketUrl =
+    process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
+
+  const fetchConversations = useCallback(async () => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      const response = await axios.get(
+        `${serverUrl}/api/messages/conversations`
+      );
+      dispatch({ type: 'SET_CONVERSATIONS', payload: response.data });
+      dispatch({ type: 'SET_ERROR', payload: null });
+    } catch (error) {
+      console.error('❌ Error fetching conversations:', error);
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Failed to fetch conversations'
+      });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  }, [serverUrl]);
 
   useEffect(() => {
     let socket = null;
 
-    // Initialize socket connection
     try {
       socket = io(socketUrl, {
         transports: ['websocket', 'polling'],
@@ -118,15 +149,15 @@ export const ChatProvider = ({ children }) => {
         dispatch({ type: 'UPDATE_MESSAGE_STATUS', payload: data });
       });
 
-      // Store socket reference
-      state.socket = socket;
-
+      dispatch({ type: 'SET_SOCKET', payload: socket });
     } catch (error) {
       console.error('❌ Socket initialization error:', error);
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to connect to server' });
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Failed to connect to server'
+      });
     }
 
-    // Initial data fetch
     fetchConversations();
 
     return () => {
@@ -134,39 +165,25 @@ export const ChatProvider = ({ children }) => {
         socket.disconnect();
       }
     };
-  }, [socketUrl]);
-
-  const fetchConversations = async () => {
-    try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      const response = await axios.get(`${serverUrl}/api/messages/conversations`);
-      dispatch({ type: 'SET_CONVERSATIONS', payload: response.data });
-      dispatch({ type: 'SET_ERROR', payload: null });
-    } catch (error) {
-      console.error('❌ Error fetching conversations:', error);
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to fetch conversations' });
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
-    }
-  };
+  }, [socketUrl, fetchConversations]);
 
   const fetchMessages = async (wa_id) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const response = await axios.get(`${serverUrl}/api/messages/chat/${wa_id}`);
+      const response = await axios.get(
+        `${serverUrl}/api/messages/chat/${wa_id}`
+      );
 
-      dispatch({ 
-        type: 'SET_CURRENT_CHAT', 
+      dispatch({
+        type: 'SET_CURRENT_CHAT',
         payload: {
           user: response.data.user,
           messages: response.data.messages
         }
       });
 
-      // Mark messages as read
       dispatch({ type: 'MARK_MESSAGES_READ', payload: { wa_id } });
 
-      // Join chat room for real-time updates
       if (state.socket && state.socket.connected) {
         state.socket.emit('join_chat', wa_id);
       }
@@ -174,7 +191,10 @@ export const ChatProvider = ({ children }) => {
       dispatch({ type: 'SET_ERROR', payload: null });
     } catch (error) {
       console.error('❌ Error fetching messages:', error);
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to fetch messages' });
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Failed to fetch messages'
+      });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -188,13 +208,14 @@ export const ChatProvider = ({ children }) => {
 
       const messageData = { wa_id, content: content.trim() };
 
-      // Send via socket for real-time delivery
       if (state.socket && state.socket.connected) {
         state.socket.emit('send_message', messageData);
         return { success: true };
       } else {
-        // Fallback to HTTP if socket not available
-        const response = await axios.post(`${serverUrl}/api/messages/send`, messageData);
+        const response = await axios.post(
+          `${serverUrl}/api/messages/send`,
+          messageData
+        );
         dispatch({ type: 'ADD_MESSAGE', payload: response.data.message });
         return { success: true };
       }
@@ -209,10 +230,15 @@ export const ChatProvider = ({ children }) => {
       return state.conversations;
     }
 
-    return state.conversations.filter(conv =>
-      conv.user?.name?.toLowerCase().includes(query.toLowerCase()) ||
-      conv.user?.profile_name?.toLowerCase().includes(query.toLowerCase()) ||
-      conv.lastMessage?.content?.toLowerCase().includes(query.toLowerCase())
+    return state.conversations.filter(
+      (conv) =>
+        conv.user?.name?.toLowerCase().includes(query.toLowerCase()) ||
+        conv.user?.profile_name
+          ?.toLowerCase()
+          .includes(query.toLowerCase()) ||
+        conv.lastMessage?.content
+          ?.toLowerCase()
+          .includes(query.toLowerCase())
     );
   };
 
@@ -225,9 +251,7 @@ export const ChatProvider = ({ children }) => {
   };
 
   return (
-    <ChatContext.Provider value={value}>
-      {children}
-    </ChatContext.Provider>
+    <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
   );
 };
 
