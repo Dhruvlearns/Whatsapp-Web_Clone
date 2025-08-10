@@ -1,0 +1,29 @@
+{
+  "name": "whatsapp-web-clone",
+  "version": "1.0.0",
+  "description": "Full-stack WhatsApp Web clone with real-time messaging",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "cd server && npm start",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm start\"",
+    "build": "cd client && npm run build",
+    "install-server": "cd server && npm install",
+    "install-client": "cd client && npm install",
+    "install-all": "npm run install-server && npm run install-client",
+    "process-payloads": "cd server && node processPayloads.js",
+    "deploy": "./deploy.sh"
+  },
+  "keywords": [
+    "whatsapp",
+    "chat",
+    "websocket",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

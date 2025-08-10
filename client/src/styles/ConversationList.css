@@ -1,0 +1,224 @@
+/* ===== Conversations Container ===== */
+.conversations-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+  }
+  
+  /* ===== Search Bar ===== */
+  .search-container {
+    padding: 0.5rem;
+    background-color: #f0f2f5;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 20px;
+    padding: 0 0.5rem;
+    border: 1px solid #ccc;
+  }
+  
+  .search-icon {
+    font-size: 1rem;
+    color: #888;
+    margin-right: 0.25rem;
+  }
+  
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0.4rem;
+    font-size: 0.9rem;
+  }
+  
+  .search-clear {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #888;
+    cursor: pointer;
+  }
+  
+  /* ===== Conversations List ===== */
+  .conversations-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .conversation-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .conversation-item.selected {
+    background-color: #e1f3e0;
+  }
+  
+  /* ===== Avatar ===== */
+  .conversation-avatar {
+    position: relative;
+    margin-right: 0.75rem;
+  }
+  
+  .conversation-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #d1d7db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  /* ===== Conversation Content ===== */
+  .conversation-content {
+    flex: 1;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .conversation-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  .conversation-time {
+    font-size: 0.75rem;
+    color: #999;
+  }
+  
+  /* ===== Message Preview ===== */
+  .conversation-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .last-message {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #555;
+  }
+  
+  .message-status {
+    margin-right: 0.25rem;
+    font-size: 0.85rem;
+    color: #555;
+  }
+  
+  .message-status.read {
+    color: #34b7f1;
+  }
+  
+  .message-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* ===== Unread Badge ===== */
+  .unread-badge {
+    background-color: #25d366;
+    color: white;
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ===== Empty States ===== */
+  .no-conversations,
+  .empty-conversations,
+  .search-no-results {
+    text-align: center;
+    padding: 1rem;
+    color: #888;
+  }
+  
+  .empty-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .empty-conversations small {
+    color: #aaa;
+  }
+  
+  /* ===== Online Indicator ===== */
+  .online-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #25d366;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+  }
+  
+  /* ===== Loading Spinner ===== */
+  .loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #ccc;
+    border-top: 3px solid #25d366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 0.5rem;
+  }
+  
+  .conversations-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2rem;
+  }
+  
+  @keyframes spin {
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* ===== Scrollbar Styling ===== */
+  .conversations-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .conversations-list::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+  
