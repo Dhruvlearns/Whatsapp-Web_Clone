@@ -1,0 +1,39 @@
+{
+  "entry": [
+    {
+      "changes": [
+        {
+          "field": "messages",
+          "value": {
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Ravi Kumar"
+                },
+                "wa_id": "919937320320"
+              }
+            ],
+            "messages": [
+              {
+                "from": "919937320320",
+                "id": "wamid.HBgMOTE5OTY3NTc4NzIwFQIAEhggMTIzQURFRjEyMzQ1Njc4OTA=",
+                "timestamp": "1754400000",
+                "text": {
+                  "body": "Hi, I’d like to know more about your services."
+                },
+                "type": "text"
+              }
+            ],
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "918329446654",
+              "phone_number_id": "629305560276479"
+            }
+          }
+        }
+      ],
+      "id": "30164062719905277"
+    }
+  ],
+  "object": "whatsapp_business_account"
+}
