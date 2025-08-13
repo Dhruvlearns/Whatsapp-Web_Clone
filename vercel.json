@@ -15,22 +15,10 @@
       }
     ],
     "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "/server/server.js"
-      },
-      {
-        "src": "/socket.io/(.*)",
-        "dest": "/server/server.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/client/build/index.html"
-      }
-    ],
-    "env": {
-      "MONGODB_URI": "MONGODB_URI",
-      "NODE_ENV": "production"
-    }
+      { "src": "/api/(.*)", "dest": "/server/server.js" },
+      { "src": "/socket.io/(.*)", "dest": "/server/server.js" },
+      { "handle": "filesystem" },
+      { "src": "/(.*)", "dest": "/client/build/index.html" }
+    ]
   }
   
